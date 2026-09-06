@@ -1,0 +1,8 @@
+.env
+/bin/
+*.test
+*.out
+bench/results/*
+!bench/results/.gitkeep
+!bench/results/scaling.md
+!bench/results/chaos-*.md
