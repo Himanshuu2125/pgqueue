@@ -1,0 +1,16 @@
+{{define "content"}}<div id="job">
+{{with .Job}}<h2>Job {{.ID}}</h2>
+<p>tenant <b>{{.TenantID}}</b> · queue <b>{{.Queue}}</b> · type <b>{{.Type}}</b> · state <b class="state-{{.State}}">{{.State}}</b>
+ · attempts {{.Attempts}}/{{.MaxAttempts}} · priority {{.Priority}}{{if .CancelRequested}} · cancel requested{{end}}</p>
+<p><button class="danger" hx-post="/admin/jobs/{{.ID}}/cancel" hx-target="#job" hx-swap="outerHTML">Cancel</button>
+<button hx-post="/admin/jobs/{{.ID}}/replay" hx-target="#job" hx-swap="outerHTML">Replay</button></p>
+{{end}}{{if .Msg}}<p class="msg">{{.Msg}}</p>{{end}}
+<h3>Payload</h3><pre>{{.Payload}}</pre>
+<h3>Result</h3><pre>{{.Result}}</pre>
+<h3>Last error</h3><pre>{{with .Job.LastError}}{{.}}{{end}}</pre>
+<h3>Events</h3>
+<table><tr><th>event</th><th>attempt</th><th>worker</th><th>detail</th><th>at</th></tr>
+{{range .Events}}<tr><td>{{.Event}}</td><td class="num">{{.Attempt}}</td><td>{{with .WorkerID}}{{.}}{{end}}</td>
+<td>{{printf "%s" .Detail}}</td><td class="muted">{{.CreatedAt.Format "2006-01-02 15:04:05.000"}}</td></tr>{{end}}
+</table>
+</div>{{end}}

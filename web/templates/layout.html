@@ -1,0 +1,32 @@
+{{define "layout"}}<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Job Queue Admin</title>
+<script src="/admin/static/htmx.min.js"></script>
+<style>
+body { font: 14px/1.4 system-ui, sans-serif; margin: 0; background: #f7f7f8; color: #222; }
+header { background: #1f2937; padding: 10px 20px; }
+header a { color: #fff; margin-right: 16px; text-decoration: none; font-weight: 600; }
+main { padding: 20px; max-width: 1200px; margin: 0 auto; }
+table { border-collapse: collapse; width: 100%; background: #fff; margin: 12px 0; }
+th, td { border: 1px solid #ddd; padding: 6px 8px; text-align: left; font-size: 13px; }
+th { background: #eef0f3; }
+td.num { text-align: right; font-variant-numeric: tabular-nums; }
+pre { background: #fff; border: 1px solid #ddd; padding: 10px; overflow-x: auto; max-height: 300px; }
+button { padding: 4px 10px; cursor: pointer; border: 1px solid #888; border-radius: 4px; background: #fff; }
+button.danger { border-color: #b91c1c; color: #b91c1c; }
+form.filters input, form.filters select { margin-right: 8px; padding: 3px; }
+.muted { color: #666; }
+.state-dead { color: #b91c1c; font-weight: 600; }
+.state-succeeded { color: #15803d; }
+.state-running { color: #1d4ed8; }
+.msg { background: #fef9c3; padding: 6px 10px; border: 1px solid #eab308; }
+</style>
+</head>
+<body>
+<header><a href="/admin">Dashboard</a><a href="/admin/jobs">Jobs</a><a href="/admin/jobs?state=dead">Dead</a></header>
+<main>{{template "content" .}}</main>
+</body>
+</html>{{end}}

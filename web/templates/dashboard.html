@@ -1,0 +1,13 @@
+{{define "content"}}<div id="dash" hx-get="/admin?partial=1" hx-trigger="every 2s" hx-swap="outerHTML">
+<p>Scheduler leader: <b>{{if .Leader}}{{.Leader}}{{else}}none{{end}}</b></p>
+<table>
+<tr><th>queue</th>{{range .States}}<th>{{.}}</th>{{end}}<th>paused</th><th></th></tr>
+{{range $q := .Queues}}<tr>
+<td><a href="/admin/jobs?queue={{$q.Name}}">{{$q.Name}}</a></td>
+{{range $s := $.States}}<td class="num"><a href="/admin/jobs?queue={{$q.Name}}&state={{$s}}">{{index (index $.Stats $q.Name) $s}}</a></td>{{end}}
+<td>{{if $q.Paused}}yes{{else}}no{{end}}</td>
+<td>{{if $q.Paused}}<button hx-post="/admin/queues/{{$q.Name}}/resume" hx-target="#dash" hx-swap="outerHTML">Resume</button>
+{{else}}<button class="danger" hx-post="/admin/queues/{{$q.Name}}/pause" hx-target="#dash" hx-swap="outerHTML">Pause</button>{{end}}</td>
+</tr>{{end}}
+</table>
+</div>{{end}}

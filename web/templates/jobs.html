@@ -1,0 +1,23 @@
+{{define "content"}}<form class="filters" method="get" action="/admin/jobs">
+<select name="state"><option value="">any state</option>{{range .States}}<option {{if eq . $.F.State}}selected{{end}}>{{.}}</option>{{end}}</select>
+<input name="queue" placeholder="queue" value="{{.F.Queue}}">
+<input name="type" placeholder="type" value="{{.F.Type}}">
+<input name="tenant" placeholder="tenant" value="{{.F.TenantID}}">
+<button>Filter</button>
+</form>
+<form id="bulk">
+<table>
+<tr>{{if eq .F.State "dead"}}<th></th>{{end}}<th>id</th><th>tenant</th><th>queue</th><th>type</th><th>state</th><th>attempts</th><th>created_at</th></tr>
+{{range .Jobs}}<tr>
+{{if eq $.F.State "dead"}}<td><input type="checkbox" name="ids" value="{{.ID}}"></td>{{end}}
+<td><a href="/admin/jobs/{{.ID}}">{{.ID}}</a></td><td>{{.TenantID}}</td><td>{{.Queue}}</td><td>{{.Type}}</td>
+<td class="state-{{.State}}">{{.State}}</td><td class="num">{{.Attempts}}/{{.MaxAttempts}}</td>
+<td class="muted">{{.CreatedAt.Format "2006-01-02 15:04:05.000"}}</td>
+</tr>{{else}}<tr><td colspan="8" class="muted">no jobs</td></tr>{{end}}
+</table>
+{{if eq .F.State "dead"}}<button hx-post="/admin/dead/replay" hx-include="#bulk" hx-target="#bulk-result">Replay selected</button>
+<span id="bulk-result"></span>{{end}}
+</form>
+{{if .Next}}<a href="/admin/jobs?state={{.F.State}}&queue={{.F.Queue}}&type={{.F.Type}}&tenant={{.F.TenantID}}&cursor={{.Next}}">Next page →</a>{{end}}
+{{end}}
+{{define "replayed"}}<span class="msg">Replayed {{.OK}}, failed {{.Failed}}</span>{{end}}
