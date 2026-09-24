@@ -1,0 +1,36 @@
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: worker
+  namespace: jobqueue
+spec:
+  replicas: 3
+  selector:
+    matchLabels: { app: worker }
+  template:
+    metadata:
+      labels: { app: worker }
+    spec:
+      terminationGracePeriodSeconds: 30
+      containers:
+        - name: worker
+          image: jobqueue-worker:dev
+          imagePullPolicy: IfNotPresent
+          envFrom:
+            - configMapRef: { name: jobqueue-config }
+            - secretRef: { name: jobqueue-secret }
+          ports: [{ containerPort: 9091 }]
+          startupProbe:
+            httpGet: { path: /healthz, port: 9091 }
+            periodSeconds: 2
+            failureThreshold: 45
+          livenessProbe:
+            httpGet: { path: /healthz, port: 9091 }
+            periodSeconds: 10
+          readinessProbe:
+            httpGet: { path: /readyz, port: 9091 }
+            periodSeconds: 5
+          resources:
+            requests: { cpu: 100m, memory: 64Mi }
+            limits: { cpu: 500m, memory: 256Mi }
